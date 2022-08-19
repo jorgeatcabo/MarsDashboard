@@ -7,6 +7,23 @@ let store = {
 // add our markup to the page
 const root = document.getElementById('root')
 
+function openCity(evt, cityName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(cityName).style.display = "block";
+    evt.currentTarget.className += " active";
+}
+
+// Get the element with id="defaultOpen" and click on it
+/*document.getElementById("defaultOpen").click();*/
+
 const updateStore = (store, newState) => {
     store = Object.assign(store, newState)
     render(root, store)
@@ -24,6 +41,7 @@ const App = (state) => {
     return `
         <header></header>
         <main>
+            ${Bar()}
             ${Greeting(store.user.name)}
             <section>
                 <h3>Put things on the page!</h3>
@@ -61,6 +79,33 @@ const Greeting = (name) => {
     return `
         <h1>Hello!</h1>
     `
+}
+
+const Bar = () => {
+    return `
+        <div class="tab">
+            <button class="tablinks" onclick="openCity(event, 'London')" id="defaultOpen">London</button>
+            <button class="tablinks" onclick="openCity(event, 'Paris')">Paris</button>
+            <button class="tablinks" onclick="openCity(event, 'Tokyo')">Tokyo</button>
+        </div>
+
+        <div id="London" class="tabcontent">
+            <h3>London</h3>
+            <p>London is the capital city of England.</p>
+        </div>
+
+        <div id="Paris" class="tabcontent">
+            <h3>Paris</h3>
+            <p>Paris is the capital of France.</p>
+        </div>
+
+        <div id="Tokyo" class="tabcontent">
+            <h3>Tokyo</h3>
+            <p>Tokyo is the capital of Japan.</p>
+        </div>
+
+
+`
 }
 
 // Example of a pure function that renders infomation requested from the backend
