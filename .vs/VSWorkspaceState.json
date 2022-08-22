@@ -1,6 +1,12 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\src",
+    "\\src\\public",
+    "\\src\\public\\assets",
+    "\\src\\public\\assets\\stylesheets",
+    "\\src\\server"
   ],
+  "SelectedNode": "\\src\\public\\client.js",
   "PreviewInSolutionExplorer": false
 }
