@@ -16,6 +16,7 @@ app.use('/', express.static(path.join(__dirname, '../public')))
 
 // example API call
 ///https://github.com/chrisccerami/mars-photo-api
+//https://dev.to/meredydd/getting-photos-from-mars-with-the-nasa-api-3l2l
 app.get('/apod', async (req, res) => {
     try {        
         let image = await fetch(`https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/latest_photos?api_key=${process.env.API_KEY}`)
@@ -28,8 +29,28 @@ app.get('/apod', async (req, res) => {
 
 
 app.get('/curiosity', async (req, res) => {
-    try {
+    try {        
         let results = await fetch(`https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/latest_photos?api_key=${process.env.API_KEY}`)
+            .then(res => res.json())
+        res.send(results)
+    } catch (err) {
+        console.log('error:', err);
+    }
+})
+
+app.get('/opportunity', async (req, res) => {
+    try {
+        let results = await fetch(`https://api.nasa.gov/mars-photos/api/v1/rovers/opportunity/latest_photos?api_key=${process.env.API_KEY}`)
+            .then(res => res.json())
+        res.send(results)
+    } catch (err) {
+        console.log('error:', err);
+    }
+})
+
+app.get('/spirit', async (req, res) => {
+    try {
+        let results = await fetch(`https://api.nasa.gov/mars-photos/api/v1/rovers/spirit/latest_photos?api_key=${process.env.API_KEY}`)
             .then(res => res.json())
         res.send(results)
     } catch (err) {
