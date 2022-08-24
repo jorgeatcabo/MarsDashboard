@@ -3,10 +3,8 @@
     "",
     "\\src",
     "\\src\\public",
-    "\\src\\public\\assets",
-    "\\src\\public\\assets\\stylesheets",
-    "\\src\\server"
+    "\\src\\public\\assets\\stylesheets"
   ],
-  "SelectedNode": "\\.gitignore",
+  "SelectedNode": "\\package.json",
   "PreviewInSolutionExplorer": false
 }
