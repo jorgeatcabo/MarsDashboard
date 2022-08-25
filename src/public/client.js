@@ -7,7 +7,7 @@ let store = {
 // add our markup to the page
 const root = document.getElementById('root')
 
-function openCity(evt, cityName) {
+function openCity(evt) {
     var i, tabcontent, tablinks;
     tabcontent = document.getElementsByClassName("tabcontent");
     for (i = 0; i < tabcontent.length; i++) {
@@ -17,12 +17,11 @@ function openCity(evt, cityName) {
     for (i = 0; i < tablinks.length; i++) {
         tablinks[i].className = tablinks[i].className.replace(" active", "");
     }
-    document.getElementById(cityName).style.display = "block";
+    document.getElementById(evt.currentTarget.myParam).style.display = "block";
     evt.currentTarget.className += " active";
+    
 }
 
-//// Get the element with id="defaultOpen" and click on it
-//document.getElementById("defaultOpen").click();
 
 const updateStore = (store, newState) => {
     store = Object.assign(store, newState)
@@ -32,8 +31,22 @@ const updateStore = (store, newState) => {
 
 const render = async (root, state) => {
     root.innerHTML = App(state)
+
+    var { rovers } = state
+
     // Get the element with id="defaultOpen" and click on it
     document.getElementById("defaultOpen").click();
+
+    var buttons = document.querySelectorAll('.tablinks');
+
+    //Add event listener to each tab's button
+    for (var i = 0; i < buttons.length; i++) {
+        let rover = rovers[i]
+        buttons[i].addEventListener('click', openCity, false);
+        buttons[i].myParam = rover;
+    }
+   
+
 }
 
 
@@ -71,19 +84,20 @@ const Greeting = (name) => {
 }
 
 const Bar = (state) => {
-    let { rovers, apod } = state
+    var { rovers, apod } = state
 
     var parent = document.createElement('div');    
     
     //Creating Tab
     var tab = document.createElement('div');
     tab.classList.add("tab");
+    tab.id = "parent"
 
     parent.appendChild(tab);
     
 
 
-    //Creating Tab Elements
+    //Creating Tabs
     rovers.map((element, index) => {
         let button = document.createElement('button');
         tab.appendChild(button);
@@ -91,16 +105,15 @@ const Bar = (state) => {
         button.textContent = element
         
         
-        if (index === 0) button.setAttribute("id", "defaultOpen");
-
-        /*button.addEventListener("click", openCity(event, element));*/
+        if (index === 0) button.setAttribute("id", "defaultOpen");       
 
     })
 
-    let contentTabs = rovers.map((element, index) => {
+    //Create Tabs Content
+     rovers.map((element, index) => {
         let tabContent = document.createElement('div');
         tabContent.id = element;
-        tabContent.classList.add("tabContent");
+        tabContent.classList.add("tabcontent");
         let h3Content = document.createElement('h3');
         h3Content.textContent = element
 
@@ -110,39 +123,12 @@ const Bar = (state) => {
 
         
 
-    })
-
-    
+     })    
 
 
 
 
-    //for (let i = 0; i <= shuffleDinosObjects.length - 1; i++) {
 
-    //    // Generate Tiles for each Dino in Array
-    //    let div = document.createElement('div');
-    //    let h3 = document.createElement('h3');
-    //    let p = document.createElement('p');
-    //    let img = document.createElement('img');
-
-    //    // Add tiles to DOM
-    //    grid.appendChild(div);
-    //    div.appendChild(h3);
-    //    div.appendChild(img);
-    //    div.appendChild(p);
-
-    //    if (shuffleDinosObjects[i].getSpecies() !== "Human") {
-    //        h3.textContent = shuffleDinosObjects[i].getSpecies()
-    //        p.textContent = shuffleDinosObjects[i].getFact()
-    //    }
-    //    else {
-    //        h3.textContent = shuffleDinosObjects[i].getName()
-    //    }
-
-    //    img.src = `./images/${shuffleDinosObjects[i].getImage()}`
-
-    //    div.classList.add("grid-item");
-    //}
 
 //    return `
 //        <div class="tab">
@@ -164,96 +150,11 @@ const Bar = (state) => {
 //            <h3>Spirit</h3>
 //        </div>
 //`
+   
 
     return `${parent.outerHTML}`
 }
 
-const BarContent = (state) => {
-    let { rovers, apod } = state
-    //Creating Tab
-    //var tabContent = document.createElement('div');
-    //tabContent.classList.add("tabcontent");
-    //tabContent.id = 'Curiosity';
-
-    //let h3Content = document.createElement('h3');
-    //h3Content.textContent="Curiosity"
-    //tabContent.appendChild(h3Content);
-
-    //let h3Content2 = document.createElement('h3');
-    //h3Content2.textContent = "Opportunity"
-    //tabContent.appendChild(h3Content2);
-
-    var tabContent = ""
-
-
-    //Creating Tabs' Content
-    let contentTabs=rovers.map((element, index) => {
-        let tabContent = document.createElement('div');
-        let h3Content = document.createElement('h3');
-        h3Content.textContent = "Curiosity"
-
-        tabContent.appendChild(h3Content);
-        return tabContent
-
-        /* div.after(divNext);*/
-        /*button.addEventListener("click", openCity(event, element));*/
-
-    })
-
-    console.log(contentTabs[0].outerHTML)
-    console.log(contentTabs[1].outerHTML)
-    console.log(contentTabs[2].outerHTML)
-
-    //for (let i = 0; i <= shuffleDinosObjects.length - 1; i++) {
-
-    //    // Generate Tiles for each Dino in Array
-    //    let div = document.createElement('div');
-    //    let h3 = document.createElement('h3');
-    //    let p = document.createElement('p');
-    //    let img = document.createElement('img');
-
-    //    // Add tiles to DOM
-    //    grid.appendChild(div);
-    //    div.appendChild(h3);
-    //    div.appendChild(img);
-    //    div.appendChild(p);
-
-    //    if (shuffleDinosObjects[i].getSpecies() !== "Human") {
-    //        h3.textContent = shuffleDinosObjects[i].getSpecies()
-    //        p.textContent = shuffleDinosObjects[i].getFact()
-    //    }
-    //    else {
-    //        h3.textContent = shuffleDinosObjects[i].getName()
-    //    }
-
-    //    img.src = `./images/${shuffleDinosObjects[i].getImage()}`
-
-    //    div.classList.add("grid-item");
-    //}
-
-    //    return `
-    //        <div class="tab">
-    //            <button class="tablinks" onclick="openCity(event, 'Curiosity')" id="defaultOpen">London</button>
-    //            <button class="tablinks" onclick="openCity(event, 'Opportunity')">Opportunity</button>
-    //            <button class="tablinks" onclick="openCity(event, 'Spirit')">Spirit</button>
-    //        </div>
-
-    //        <div id="Curiosity" class="tabcontent">
-    //            <h3>Curiosity Rover</h3>
-    //             ${ImageOfTheDay(apod)}
-    //        </div>
-
-    //        <div id="Opportunity" class="tabcontent">
-    //            <h3>Opportunity</h3>
-    //        </div>
-
-    //        <div id="Spirit" class="tabcontent">
-    //            <h3>Spirit</h3>
-    //        </div>
-    //`
-
-    return `${contentTabs[0].outerHTML}`
-}
 
 
 // Example of a pure function that renders infomation requested from the backend

@@ -3,8 +3,9 @@
     "",
     "\\src",
     "\\src\\public",
+    "\\src\\public\\assets",
     "\\src\\public\\assets\\stylesheets"
   ],
-  "SelectedNode": "\\package.json",
+  "SelectedNode": "\\src\\public\\assets\\stylesheets\\index.css",
   "PreviewInSolutionExplorer": false
 }
