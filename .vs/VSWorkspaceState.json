@@ -4,8 +4,9 @@
     "\\src",
     "\\src\\public",
     "\\src\\public\\assets",
-    "\\src\\public\\assets\\stylesheets"
+    "\\src\\public\\assets\\stylesheets",
+    "\\src\\server"
   ],
-  "SelectedNode": "\\src\\public\\assets\\stylesheets\\index.css",
+  "SelectedNode": "\\src\\server\\index.js",
   "PreviewInSolutionExplorer": false
 }

@@ -6,8 +6,14 @@ let store = {
 
 // add our markup to the page
 const root = document.getElementById('root')
+//Make Bar Info Not Visible
+var barInfo = false
 
-function openCity(evt) {
+var info = false
+var roverData = []
+/*getImageOfTheDay(store)*/
+
+function openTab(evt) {
     var i, tabcontent, tablinks;
     tabcontent = document.getElementsByClassName("tabcontent");
     for (i = 0; i < tabcontent.length; i++) {
@@ -24,28 +30,97 @@ function openCity(evt) {
 
 
 const updateStore = (store, newState) => {
-    store = Object.assign(store, newState)
-    console.log(store)
+    store = Object.assign(store, newState)    
     render(root, store)
 }
 
+var dashboard = document.createElement('div');
+
 const render = async (root, state) => {
+    /*barInfo = true*/
+
+    var { rovers, apod } = state
+
+    /*var parent = document.createElement('div');*/
+
+    //Creating Tab
+    var tab = document.createElement('div');
+    tab.classList.add("tab");
+    tab.id = "parent"
+
+    dashboard.appendChild(tab);
+
+
+
+    //Creating Tabs
+    rovers.map((element, index) => {
+        let button = document.createElement('button');
+        tab.appendChild(button);
+        button.classList.add("tablinks");
+        button.textContent = element
+
+
+        if (index === 0) button.setAttribute("id", "defaultOpen");
+
+    })
+
+    //Create Tabs Content
+    rovers.map((element, index) => {
+        let tabContent = document.createElement('div');
+        tabContent.id = element;
+        tabContent.classList.add("tabcontent");
+        let h3Content = document.createElement('h3');
+        h3Content.textContent = element
+
+        tabContent.appendChild(h3Content);
+        barInfo=true
+        dashboard.appendChild(tabContent);
+
+
+
+    })
+
+
+
+
+    //const fetchingData = async () => {
+
+    //    await state.rovers.reduce(async (previousPromise, url) => {
+    //        await previousPromise
+    //        const response = await fetch(`http://localhost:3000/${url}`)
+    //        const data = await response.json();
+    //        roverData.push(data)
+
+    //        //Make Bar Info Visible
+    //        barInfo = true
+
+    //        return Promise.resolve()
+    //    }, Promise.resolve())
+    //    console.log(roverData)
+    //}
+
+    //await fetchingData()
+
+
+
+
     root.innerHTML = App(state)
 
-    var { rovers } = state
-
-    // Get the element with id="defaultOpen" and click on it
-    document.getElementById("defaultOpen").click();
+    
 
     var buttons = document.querySelectorAll('.tablinks');
 
-    //Add event listener to each tab's button
+    //Add click event each tab's button
     for (var i = 0; i < buttons.length; i++) {
         let rover = rovers[i]
-        buttons[i].addEventListener('click', openCity, false);
+        buttons[i].addEventListener('click', openTab, false);
         buttons[i].myParam = rover;
-    }
-   
+    }   
+
+    /*document.getElementById('Curiosity').src = "https://picsum.photos/200/301";*/
+    ///*img.src = "https://picsum.photos/200/301";*/
+    // Get the element with id="defaultOpen" and click on it
+    document.getElementById("defaultOpen").click();
 
 }
 
@@ -57,7 +132,8 @@ const App = (state) => {
     return `
         <header></header>
         <main id='main'>
-            ${Bar(state)}
+            ${barInfo ? dashboard.innerHTML : `<h1>Loading Bar Section...</h1>` }
+            ${info ? Info(state) : `<h1>Loading Info Section...</h1>` }
         </main>
         <footer></footer>
     `
@@ -83,63 +159,111 @@ const Greeting = (name) => {
     `
 }
 
-const Bar = (state) => {
-    var { rovers, apod } = state
 
-    var parent = document.createElement('div');    
-    
-    //Creating Tab
-    var tab = document.createElement('div');
-    tab.classList.add("tab");
-    tab.id = "parent"
-
-    parent.appendChild(tab);
-    
+function bar(parent) {
+    console.log(parent)
+    return `${parent.outterHTML}`
+}
 
 
-    //Creating Tabs
-    rovers.map((element, index) => {
-        let button = document.createElement('button');
-        tab.appendChild(button);
-        button.classList.add("tablinks");
-        button.textContent = element
-        
-        
-        if (index === 0) button.setAttribute("id", "defaultOpen");       
+//function bar(state) {
+//    /*return function () {*/
+//    var roversData = []
+//    var parentResult = 'nada';
+//    console.log('first')
+//    /*var parent = document.createElement('div');*/
 
-    })
+//    const fetching = async () => {
 
-    //Create Tabs Content
-     rovers.map((element, index) => {
-        let tabContent = document.createElement('div');
-        tabContent.id = element;
-        tabContent.classList.add("tabcontent");
-        let h3Content = document.createElement('h3');
-        h3Content.textContent = element
+//        await store.rovers.reduce(async (previousPromise, url) => {
+//            await previousPromise
+//            const response = await fetch(`http://localhost:3000/${url}`)
+//            const data = await response.json();
+//            roversData.push(data)
 
-        tabContent.appendChild(h3Content);
+//            return Promise.resolve()
+//        }, Promise.resolve())
+//        console.log(roversData)
+//    }
 
-        parent.appendChild(tabContent);
+//    var createParent = new Promise(async function (resolve, reject) {
+//        console.log('second')
+//        await fetching()
 
-        
+//        let { rovers, apod } = state
 
-     })    
+//        /*var parent = document.createElement('div');*/
+
+//        //Creating Tab
+//        //var tab = document.createElement('div');
+//        //tab.classList.add("tab");
+//        //tab.id = "parent"
+
+//        //parent.appendChild(tab);
+
+//        ////Creating Tabs
+//        //rovers.map((element, index) => {
+//        //    let button = document.createElement('button');
+//        //    tab.appendChild(button);
+//        //    button.classList.add("tablinks");
+//        //    button.textContent = element
+
+
+//        //    if (index === 0) button.setAttribute("id", "defaultOpen");
+
+//        //})
+
+//        //Create Tabs Content
+//        /*  rovers.map((element, index) => {*/
+//        //let tabContent = document.createElement('div');
+//        //tabContent.id = element;
+//        //tabContent.classList.add("tabcontent");
+
+//        //let h3Content = document.createElement('h3');
+//        //h3Content.textContent = element
+
+//        //let img = document.createElement('img');
+
+//        //tabContent.appendChild(h3Content);
+//        //tabContent.appendChild(img);
+
+//        //parent.appendChild(tabContent);
+
+
+//        resolve(parent);
+
+//        /*     })*/
 
 
 
+//    });
+
+//    /*const parentResult = await createParent*/
+//    const getParent = async () => {
+
+//            /*parentResult = */await createParent
+//        /* return parentResult*/
+
+
+
+//    }
+
+//    getParent()
+
+//    /*return a*/
 
 
 
 //    return `
 //        <div class="tab">
-//            <button class="tablinks" onclick="openCity(event, 'Curiosity')" id="defaultOpen">London</button>
-//            <button class="tablinks" onclick="openCity(event, 'Opportunity')">Opportunity</button>
-//            <button class="tablinks" onclick="openCity(event, 'Spirit')">Spirit</button>
+//            <button class="tablinks" onclick="openTab(event, 'Curiosity')" id="defaultOpen">Curiosity</button>
+//            <button class="tablinks" onclick="openTab(event, 'Opportunity')">Opportunity</button>
+//            <button class="tablinks" onclick="openTab(event, 'Spirit')">Spirit</button>
 //        </div>
 
 //        <div id="Curiosity" class="tabcontent">
 //            <h3>Curiosity Rover</h3>
-//             ${ImageOfTheDay(apod)}
+//             <img>
 //        </div>
 
 //        <div id="Opportunity" class="tabcontent">
@@ -150,30 +274,243 @@ const Bar = (state) => {
 //            <h3>Spirit</h3>
 //        </div>
 //`
-   
 
-    return `${parent.outerHTML}`
-}
 
+
+//}
+
+//const buildingUI = (state) => {
+//    var roversData = []
+//    var parentResult = 'nada';
+//    console.log('first')
+//    var parent = document.createElement('div');
+
+
+
+//        (async () => {
+//            const fetching = async () => {
+
+
+//                await store.rovers.reduce(async (previousPromise, url) => {
+//                    await previousPromise
+//                    const response = await fetch(`http://localhost:3000/${url}`)
+//                    const data = await response.json();
+//                    roversData.push(data)
+
+//                    return Promise.resolve()
+//                }, Promise.resolve())
+//                console.log(roversData)
+//            }
+
+
+
+//            var createParent = new Promise(async function (resolve, reject) {
+//                console.log('second')
+//                await fetching()
+
+
+//                let { rovers, apod } = state
+
+//                /*var parent = document.createElement('div');*/
+
+//                //Creating Tab
+//                var tab = document.createElement('div');
+//                tab.classList.add("tab");
+//                tab.id = "parent"
+
+//                parent.appendChild(tab);
+
+//                //Creating Tabs
+//                rovers.map((element, index) => {
+//                    let button = document.createElement('button');
+//                    tab.appendChild(button);
+//                    button.classList.add("tablinks");
+//                    button.textContent = element
+
+
+//                    if (index === 0) button.setAttribute("id", "defaultOpen");
+
+//                })
+
+//                //Create Tabs Content
+//                rovers.map((element, index) => {
+//                    let tabContent = document.createElement('div');
+//                    tabContent.id = element;
+//                    tabContent.classList.add("tabcontent");
+
+//                    let h3Content = document.createElement('h3');
+//                    h3Content.textContent = element
+
+//                    let img = document.createElement('img');
+
+//                    tabContent.appendChild(h3Content);
+//                    tabContent.appendChild(img);
+
+//                    parent.appendChild(tabContent);
+
+//                    /*console.log(roversData)*/
+
+//                    resolve(parent);
+
+//                })
+
+
+
+//            });
+
+//            /*const parentResult = await createParent*/
+//            const getParent = async () => {
+//                console.log(parentResult)
+//                parentResult = await createParent
+//                return parentResult
+
+
+
+//            }
+
+//            let a = await getParent()
+//            return a
+
+
+
+//        })()
+//}
+
+//const Bar = (func => {
+
+//    return func(state);
+
+
+//    //var roversData = []
+//    //var parentResult = 'nada';
+//    //console.log('first')
+//    //var parent = document.createElement('div');
+
+//    //if (parentResult == 'nada') {
+
+//    //    (async () => {
+//    //        const fetching = async () => {
+
+
+//    //            await store.rovers.reduce(async (previousPromise, url) => {
+//    //                await previousPromise
+//    //                const response = await fetch(`http://localhost:3000/${url}`)
+//    //                const data = await response.json();
+//    //                roversData.push(data)
+
+//    //                return Promise.resolve()
+//    //            }, Promise.resolve())
+//    //            console.log(roversData)
+//    //        }
+
+
+
+//    //        var createParent = new Promise(async function (resolve, reject) {
+//    //            console.log('second')
+//    //            await fetching()
+
+
+//    //            let { rovers, apod } = state
+
+//    //            /*var parent = document.createElement('div');*/
+
+//    //            //Creating Tab
+//    //            var tab = document.createElement('div');
+//    //            tab.classList.add("tab");
+//    //            tab.id = "parent"
+
+//    //            parent.appendChild(tab);
+
+//    //            //Creating Tabs
+//    //            rovers.map((element, index) => {
+//    //                let button = document.createElement('button');
+//    //                tab.appendChild(button);
+//    //                button.classList.add("tablinks");
+//    //                button.textContent = element
+
+
+//    //                if (index === 0) button.setAttribute("id", "defaultOpen");
+
+//    //            })
+
+//    //            //Create Tabs Content
+//    //            rovers.map((element, index) => {
+//    //                let tabContent = document.createElement('div');
+//    //                tabContent.id = element;
+//    //                tabContent.classList.add("tabcontent");
+
+//    //                let h3Content = document.createElement('h3');
+//    //                h3Content.textContent = element
+
+//    //                let img = document.createElement('img');
+
+//    //                tabContent.appendChild(h3Content);
+//    //                tabContent.appendChild(img);
+
+//    //                parent.appendChild(tabContent);
+
+//    //                /*console.log(roversData)*/
+
+//    //                resolve(parent);
+
+//    //            })
+
+
+
+//    //        });
+
+//    //        /*const parentResult = await createParent*/
+//    //        const getParent = async () => {
+//    //            console.log(parentResult)
+//    //            parentResult = await createParent
+//    //            return parentResult
+
+
+
+//    //        }
+
+//    //        let a = await getParent()
+//    //        console.log(a)
+
+
+
+//    //    })()
+//    //}
+    
+//    //return `${parentResult}`
+
+    
+
+
+    
+
+    
+//}
+
+
+
+
+
+//const Bar = buildingUI(store);
 
 
 // Example of a pure function that renders infomation requested from the backend
-const ImageOfTheDay = (apod) => {
-
+const ImageOfTheDay = (apod, rover) => {
+    
     // If image does not already exist, or it is not from today -- request it again
     const today = new Date()
     const photodate = new Date(apod.date)
     /*console.log(photodate.getDate(), today.getDate());*/
 
     /*console.log(photodate.getDate() === today.getDate());*/
-    if (!apod || apod.date === today.getDate() ) {
-        getImageOfTheDay(store)
+    if (!apod || apod.date === today.getDate()) {    
+        getImageOfTheDay(store,rover)
     }
 
+    /*<img src="${apod.latest_photos[1].img_src}" height="240px" width="100%" />*/
     if (apod) {
-        return (`
-            <img src="${apod.latest_photos[1].img_src}" height="240px" width="100%" />
-        `)
+        /*console.log(`second apod ${apod.latest_photos[1].img_src}`)*/
+        return apod.latest_photos[1].img_src;
     }
     else
     {
@@ -183,13 +520,106 @@ const ImageOfTheDay = (apod) => {
     }
 }
 
+
+
 // ------------------------------------------------------  API CALLS
 
 // Example API call
-const getImageOfTheDay = (state) => {
+function getImageOfTheDay (state,rover) {
     let { apod } = state
+    //fetch(`http://localhost:3000/${rover}`)
+    //    .then(res => res.json())
+    //    .then(apod => updateStore(store, { apod }))
 
-    fetch(`http://localhost:3000/curiosity`)
-        .then(res => res.json())
-        .then(apod => updateStore(store, { apod }))    
+    //const opportunityResponse=await fetch(`http://localhost:3000/opportunity`)
+    //const opportunity = await opportunityResponse.json();
+
+    //const curiosityResponse = await fetch(`http://localhost:3000/curiosity`)
+    //const curiosity = await curiosityResponse.json();
+
+    //const spiritResponse = await fetch(`http://localhost:3000/spirit`)
+    //const spirit = await spiritResponse.json();
+
+    //updateStore(store, { opportunity })
+    //updateStore(store, { curiosity })
+    //updateStore(store, { spirit })
+
+    //var response = ""
+    //var data =""
+    //async function getData(state) {
+    //    for (let rover of state.rovers) {
+
+    //        response = await fetch(`http://localhost:3000/${rover}`)
+    //        data = await response.json();
+    //        console.log(rover)
+    //        updateStore(store, { data })
+
+    //    }
+    //}
+
+    //getData(state)
+
+    
+
+    const fetching = async () => {
+        
+
+        await store.rovers.reduce(async (previousPromise, url) => {
+            await previousPromise
+            const response = await fetch(`http://localhost:3000/${url}`)
+            const data = await response.json();
+            roversData.push(data)
+            return Promise.resolve()
+        }, Promise.resolve())
+
+    }
+
+    fetching()
+
+    //state.rovers.forEach(async (rover) => {
+    //    console.log(rover)
+    //    let response = await fetch(`http://localhost:3000/${rover}`)
+    //    let data = await response.json();
+        
+    //    updateStore(store, { data })
+    //});
+
+  
+
+
+
+    /*return movies;*/
+
+    //fetch(`http://localhost:3000/opportunity`)
+    //    .then(res => res.json())
+    //    .then(apod => updateStore(store, { apod }))    
+
+
+    //fetch(`http://localhost:3000/curiosity`)
+    //    .then(res => res.json())
+    //    .then(apod => updateStore(store, { apod }))    
+
+    //fetch(`http://localhost:3000/spirit`)
+    //    .then(res => res.json())
+    //    .then(apod => updateStore(store, { apod }))    
+
+    
 }
+
+
+
+/*store.rovers.forEach(rover => getImageOfTheDay(store, rover));*/
+
+//store.rovers.map((rover) => {
+//    console.log(rover)
+//    getImageOfTheDay(store,rover)
+//})
+
+
+//getImageOfTheDay(store, "opportunity")
+
+/*getImageOfTheDay(store, "curiosity")*/
+
+
+/*console.log(store.apod.latest_photos[1].img_src)*/
+
