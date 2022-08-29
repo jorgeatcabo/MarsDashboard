@@ -6,12 +6,12 @@ let store = {
 
 // add our markup to the page
 const root = document.getElementById('root')
+
 //Make Bar Info Not Visible
 var barInfo = false
 
 var info = false
 var roverData = []
-/*getImageOfTheDay(store)*/
 
 function openTab(evt) {
     var i, tabcontent, tablinks;
@@ -37,20 +37,34 @@ const updateStore = (store, newState) => {
 var dashboard = document.createElement('div');
 
 const render = async (root, state) => {
-    /*barInfo = true*/
 
     var { rovers, apod } = state
 
-    /*var parent = document.createElement('div');*/
+    const fetchingData = async () => {
+
+        await state.rovers.reduce(async (previousPromise, url) => {
+            await previousPromise
+            const response = await fetch(`http://localhost:3000/${url}`)
+            const data = await response.json();
+            roverData.push(data)
+
+
+            //Make Bar Info Visible
+            barInfo = true
+
+            return Promise.resolve()
+        }, Promise.resolve())
+    }
+
+    await fetchingData()
 
     //Creating Tab
     var tab = document.createElement('div');
     tab.classList.add("tab");
     tab.id = "parent"
 
+    //Adding Tab to Dashboard
     dashboard.appendChild(tab);
-
-
 
     //Creating Tabs
     rovers.map((element, index) => {
@@ -64,61 +78,92 @@ const render = async (root, state) => {
 
     })
 
-    //Create Tabs Content
-    rovers.map((element, index) => {
-        let tabContent = document.createElement('div');
-        tabContent.id = element;
-        tabContent.classList.add("tabcontent");
-        let h3Content = document.createElement('h3');
-        h3Content.textContent = element
+    //Create Tabs Content With Pure Function
+    //let tabsContent = rovers.map((element) => {
+    //    //Creating Room for Content 
+    //    let tabContent = document.createElement('div');
+    //    tabContent.id = element;
+    //    tabContent.classList.add("tabcontent");
 
-        tabContent.appendChild(h3Content);
-        barInfo=true
-        dashboard.appendChild(tabContent);
+    //    let h3Content = document.createElement('h3');
+    //    h3Content.textContent = element
+
+    //    //Creating img Element for Content 
+    //    let imgContent = document.createElement('img');
+    //    imgContent.id = `${element}Image`
+       
+
+    //    //Adding Content
+    //    tabContent.appendChild(h3Content);
+    //    tabContent.appendChild(imgContent);
+
+    //    return tabContent
+        
+
+    //})
+
+    ////Add Content to Each Bar's Tab
+    //tabsContent.forEach(tabContent => dashboard.appendChild(tabContent));
+
+    const createTabsContent=(rovers) =>{
+
+        let tabsContent = rovers.map((element) => {
+            //Creating Room for Content 
+            let tabContent = document.createElement('div');
+            tabContent.id = element;
+            tabContent.classList.add("tabcontent");
+
+            let h3Content = document.createElement('h3');
+            h3Content.textContent = element
+
+            //Adding Content
+            tabContent.appendChild(h3Content);
+            /*tabContent.appendChild(imgContent);*/
+
+            return tabContent
+
+        })
+
+        return tabsContent
+    }
+
+    //Higher-Order Function for Adding Images to Tabs' Content
+    const addImages = (createTabsContent, rovers) => {
+
+        let tabsContent = createTabsContent(rovers);
+
+        rovers.map((element,index) => {
+
+            //Creating img Element for Content 
+            let imgContent = document.createElement('img');
+            imgContent.src = roverData[index].latest_photos[0].img_src
+
+            console.log(roverData)
+
+            tabsContent[index].appendChild(imgContent);
 
 
-
-    })
-
+        })
 
 
+        ////Add Tab's Content to Dashboard
+        tabsContent.forEach(tabContent => dashboard.appendChild(tabContent));
+    }
 
-    //const fetchingData = async () => {
-
-    //    await state.rovers.reduce(async (previousPromise, url) => {
-    //        await previousPromise
-    //        const response = await fetch(`http://localhost:3000/${url}`)
-    //        const data = await response.json();
-    //        roverData.push(data)
-
-    //        //Make Bar Info Visible
-    //        barInfo = true
-
-    //        return Promise.resolve()
-    //    }, Promise.resolve())
-    //    console.log(roverData)
-    //}
-
-    //await fetchingData()
-
-
-
+    //Execute Higher-Order Function for Adding Images to Tabs' Content
+    addImages(createTabsContent, rovers);
 
     root.innerHTML = App(state)
 
-    
-
     var buttons = document.querySelectorAll('.tablinks');
 
-    //Add click event each tab's button
+    //Add click event for each tab's button
     for (var i = 0; i < buttons.length; i++) {
         let rover = rovers[i]
         buttons[i].addEventListener('click', openTab, false);
         buttons[i].myParam = rover;
     }   
 
-    /*document.getElementById('Curiosity').src = "https://picsum.photos/200/301";*/
-    ///*img.src = "https://picsum.photos/200/301";*/
     // Get the element with id="defaultOpen" and click on it
     document.getElementById("defaultOpen").click();
 
@@ -160,10 +205,10 @@ const Greeting = (name) => {
 }
 
 
-function bar(parent) {
-    console.log(parent)
-    return `${parent.outterHTML}`
-}
+//function bar(parent) {
+//    console.log(parent)
+//    return `${parent.outterHTML}`
+//}
 
 
 //function bar(state) {
