@@ -17,6 +17,7 @@ app.use('/', express.static(path.join(__dirname, '../public')))
 // example API call
 ///https://github.com/chrisccerami/mars-photo-api
 //https://dev.to/meredydd/getting-photos-from-mars-with-the-nasa-api-3l2l
+//https://github.com/chrisccerami/mars-photo-api
 app.get('/apod', async (req, res) => {
     try {        
         let image = await fetch(`https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/latest_photos?api_key=${process.env.API_KEY}`)
