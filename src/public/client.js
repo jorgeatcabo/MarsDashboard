@@ -1,8 +1,10 @@
-let store = {
+let store = Immutable.Map({
     user: { name: "Student" },
     apod: '',
     rovers: ['Curiosity', 'Opportunity', 'Spirit'],
+    roverData: '',
 }
+)
 
 // add our markup to the page
 const root = document.getElementById('root')
@@ -28,10 +30,8 @@ function openTab(evt) {
     
 }
 
-
-const updateStore = (store, newState) => {
-    store = Object.assign(store, newState)    
-    render(root, store)
+const updateStore = (state, newState) => {
+    store = state.merge(newState)
 }
 
 var dashboard = document.createElement('div');
@@ -40,14 +40,21 @@ const render = async (root, state) => {
 
     var { rovers, apod } = state
 
+// ------------------------------------------------------  API CALLS
     const fetchingData = async () => {
 
-        await state.rovers.reduce(async (previousPromise, url) => {
+        await store.get('rovers').reduce(async (previousPromise, url) => {
             await previousPromise
             const response = await fetch(`http://localhost:3000/${url}`)
             const data = await response.json();
             roverData.push(data)
 
+            
+
+            updateStore(store, { roverData })
+            
+
+            //console.log(roverData[0].latest_photos[0].img_src)
 
             //Make Bar Info Visible
             barInfo = true
@@ -58,6 +65,7 @@ const render = async (root, state) => {
 
     await fetchingData()
 
+
     //Creating Tab
     var tab = document.createElement('div');
     tab.classList.add("tab");
@@ -67,7 +75,7 @@ const render = async (root, state) => {
     dashboard.appendChild(tab);
 
     //Creating Tabs
-    rovers.map((element, index) => {
+    store.get('rovers').map((element, index) => {
         let button = document.createElement('button');
         tab.appendChild(button);
         button.classList.add("tablinks");
@@ -80,7 +88,7 @@ const render = async (root, state) => {
 
     const createTabsContent=(rovers) =>{
 
-        let tabsContent = rovers.map((element) => {
+        let tabsContent = store.get('rovers').map((element) => {
             //Creating Room for Content 
             let tabContent = document.createElement('div');
             tabContent.id = element;
@@ -106,13 +114,14 @@ const render = async (root, state) => {
 
         tabsContent = createTabsContent(rovers);
 
-        rovers.map((element,index) => {
+        store.get('rovers').map((element,index) => {
 
             //Creating img Element for Content 
             let imgContent = document.createElement('img');
             imgContent.src = roverData[index].latest_photos[0].img_src;
             imgContent.width = "850";
             imgContent.height = "200";
+
 
             tabsContent[index].appendChild(imgContent);
 
@@ -122,7 +131,7 @@ const render = async (root, state) => {
 
     const createExtraInfo = (rovers) => {
 
-        let extraInfoTags = rovers.map((element) => {
+        let extraInfoTags = store.get('rovers').map((element) => {
             let div = document.createElement('div');
             div.id = element;
 
@@ -141,7 +150,7 @@ const render = async (root, state) => {
 
         extraInfoTag = createExtraInfo(rovers);
 
-        rovers.map((element, index) => {
+        store.get('rovers').map((element, index) => {
 
             //Creating p Elements for Content 
             let pLaunch_date = document.createElement('p');
@@ -153,9 +162,13 @@ const render = async (root, state) => {
             let pStatus = document.createElement('p');
             pStatus.textContent = `Status: ${roverData[index].latest_photos[0].rover.status}`;
 
+            let pPhotoDate = document.createElement('p');
+            pPhotoDate.textContent = `Photo Date: ${roverData[index].latest_photos[0].earth_date}`;
+
             extraInfoTag[index].appendChild(pLaunch_date);
             extraInfoTag[index].appendChild(pLanding_date);
             extraInfoTag[index].appendChild(pStatus);
+            extraInfoTag[index].appendChild(pPhotoDate);
 
         })
 
@@ -177,16 +190,14 @@ const render = async (root, state) => {
 
     //Add click event for each tab's button
     for (var i = 0; i < buttons.length; i++) {
-        let rover = rovers[i]
+        let rover = store.get('rovers')[i]
         buttons[i].addEventListener('click', openTab, false);
         buttons[i].myParam = rover;
     }   
 
     // Get the element with id="defaultOpen" and click on it
     document.getElementById("defaultOpen").click();
-
 }
-
 
 // create content
 const App = (state) => {
@@ -195,7 +206,7 @@ const App = (state) => {
     return `
         <header></header>
         <main id='main'>
-            ${barInfo ? dashboard.innerHTML : `<h1>Loading Bar Section...</h1>` }
+            ${barInfo ? dashboard.innerHTML : `<h1>Loading Bar Section...</h1>` }             
         </main>
         <footer></footer>
     `
@@ -220,133 +231,4 @@ const Greeting = (name) => {
         <h1>Hello!</h1>
     `
 }
-
-// Example of a pure function that renders infomation requested from the backend
-const ImageOfTheDay = (apod, rover) => {
-    
-    // If image does not already exist, or it is not from today -- request it again
-    const today = new Date()
-    const photodate = new Date(apod.date)
-    /*console.log(photodate.getDate(), today.getDate());*/
-
-    /*console.log(photodate.getDate() === today.getDate());*/
-    if (!apod || apod.date === today.getDate()) {    
-        getImageOfTheDay(store,rover)
-    }
-
-    /*<img src="${apod.latest_photos[1].img_src}" height="240px" width="100%" />*/
-    if (apod) {
-        /*console.log(`second apod ${apod.latest_photos[1].img_src}`)*/
-        return apod.latest_photos[1].img_src;
-    }
-    else
-    {
-        return (`
-           
-        `)
-    }
-}
-
-
-
-// ------------------------------------------------------  API CALLS
-
-// Example API call
-function getImageOfTheDay (state,rover) {
-    let { apod } = state
-    //fetch(`http://localhost:3000/${rover}`)
-    //    .then(res => res.json())
-    //    .then(apod => updateStore(store, { apod }))
-
-    //const opportunityResponse=await fetch(`http://localhost:3000/opportunity`)
-    //const opportunity = await opportunityResponse.json();
-
-    //const curiosityResponse = await fetch(`http://localhost:3000/curiosity`)
-    //const curiosity = await curiosityResponse.json();
-
-    //const spiritResponse = await fetch(`http://localhost:3000/spirit`)
-    //const spirit = await spiritResponse.json();
-
-    //updateStore(store, { opportunity })
-    //updateStore(store, { curiosity })
-    //updateStore(store, { spirit })
-
-    //var response = ""
-    //var data =""
-    //async function getData(state) {
-    //    for (let rover of state.rovers) {
-
-    //        response = await fetch(`http://localhost:3000/${rover}`)
-    //        data = await response.json();
-    //        console.log(rover)
-    //        updateStore(store, { data })
-
-    //    }
-    //}
-
-    //getData(state)
-
-    
-
-    const fetching = async () => {
-        
-
-        await store.rovers.reduce(async (previousPromise, url) => {
-            await previousPromise
-            const response = await fetch(`http://localhost:3000/${url}`)
-            const data = await response.json();
-            roversData.push(data)
-            return Promise.resolve()
-        }, Promise.resolve())
-
-    }
-
-    fetching()
-
-    //state.rovers.forEach(async (rover) => {
-    //    console.log(rover)
-    //    let response = await fetch(`http://localhost:3000/${rover}`)
-    //    let data = await response.json();
-        
-    //    updateStore(store, { data })
-    //});
-
-  
-
-
-
-    /*return movies;*/
-
-    //fetch(`http://localhost:3000/opportunity`)
-    //    .then(res => res.json())
-    //    .then(apod => updateStore(store, { apod }))    
-
-
-    //fetch(`http://localhost:3000/curiosity`)
-    //    .then(res => res.json())
-    //    .then(apod => updateStore(store, { apod }))    
-
-    //fetch(`http://localhost:3000/spirit`)
-    //    .then(res => res.json())
-    //    .then(apod => updateStore(store, { apod }))    
-
-    
-}
-
-
-
-/*store.rovers.forEach(rover => getImageOfTheDay(store, rover));*/
-
-//store.rovers.map((rover) => {
-//    console.log(rover)
-//    getImageOfTheDay(store,rover)
-//})
-
-
-//getImageOfTheDay(store, "opportunity")
-
-/*getImageOfTheDay(store, "curiosity")*/
-
-
-/*console.log(store.apod.latest_photos[1].img_src)*/
 
