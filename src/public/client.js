@@ -38,8 +38,6 @@ var dashboard = document.createElement('div');
 
 const render = async (root, state) => {
 
-    var { rovers, apod } = state
-
 // ------------------------------------------------------  API CALLS
     const fetchingData = async () => {
 
@@ -49,13 +47,8 @@ const render = async (root, state) => {
             const data = await response.json();
             roverData.push(data)
 
-            
-
             updateStore(store, { roverData })
             
-
-            //console.log(roverData[0].latest_photos[0].img_src)
-
             //Make Bar Info Visible
             barInfo = true
 
@@ -64,7 +57,6 @@ const render = async (root, state) => {
     }
 
     await fetchingData()
-
 
     //Creating Tab
     var tab = document.createElement('div');
@@ -81,14 +73,14 @@ const render = async (root, state) => {
         button.classList.add("tablinks");
         button.textContent = element
 
-
         if (index === 0) button.setAttribute("id", "defaultOpen");
 
     })
 
-    const createTabsContent=(rovers) =>{
+    //Pure function for creating tabs
+    const createTabsContent = (rovers) =>{
 
-        let tabsContent = store.get('rovers').map((element) => {
+        let tabs = rovers.map((element) => {
             //Creating Room for Content 
             let tabContent = document.createElement('div');
             tabContent.id = element;
@@ -104,13 +96,15 @@ const render = async (root, state) => {
 
         })
 
-        return tabsContent
+        return tabs
     }
 
     var tabsContent=""
 
+    let rovers = store.get('rovers');
+
     //Higher-Order Function for Adding Images to Tabs' Content
-    const addImages = (createTabsContent, rovers) => {
+    const addImages = (createTabsContent,rovers) => {
 
         tabsContent = createTabsContent(rovers);
 
@@ -118,10 +112,9 @@ const render = async (root, state) => {
 
             //Creating img Element for Content 
             let imgContent = document.createElement('img');
-            imgContent.src = roverData[index].latest_photos[0].img_src;
+            imgContent.src = store.get('roverData')[index].latest_photos[0].img_src;
             imgContent.width = "850";
             imgContent.height = "200";
-
 
             tabsContent[index].appendChild(imgContent);
 
@@ -154,16 +147,16 @@ const render = async (root, state) => {
 
             //Creating p Elements for Content 
             let pLaunch_date = document.createElement('p');
-            pLaunch_date.textContent = `Launch Date: ${roverData[index].latest_photos[0].rover.launch_date}`;
+            pLaunch_date.textContent = `Launch Date: ${store.get('roverData')[index].latest_photos[0].rover.launch_date}`;
 
             let pLanding_date = document.createElement('p');
-            pLanding_date.textContent = `Landing Date: ${roverData[index].latest_photos[0].rover.landing_date}`;
+            pLanding_date.textContent = `Landing Date: ${store.get('roverData')[index].latest_photos[0].rover.landing_date}`;
 
             let pStatus = document.createElement('p');
-            pStatus.textContent = `Status: ${roverData[index].latest_photos[0].rover.status}`;
+            pStatus.textContent = `Status: ${store.get('roverData')[index].latest_photos[0].rover.status}`;
 
             let pPhotoDate = document.createElement('p');
-            pPhotoDate.textContent = `Photo Date: ${roverData[index].latest_photos[0].earth_date}`;
+            pPhotoDate.textContent = `Photo Date: ${store.get('roverData')[index].latest_photos[0].earth_date}`;
 
             extraInfoTag[index].appendChild(pLaunch_date);
             extraInfoTag[index].appendChild(pLanding_date);
@@ -175,8 +168,8 @@ const render = async (root, state) => {
         ////Add Extra Info to Tab's Content
         extraInfoTag.forEach((extraInfo,index) => tabsContent[index].appendChild(extraInfo));
 
-         //Add Content to Each Bar's Tab
-    tabsContent.forEach(tabContent => dashboard.appendChild(tabContent));
+        //Add Content to Each Bar's Tab
+        tabsContent.forEach(tabContent => dashboard.appendChild(tabContent));
     }
 
     //Execute Higher-Order Function for Adding Images to Tabs' Content
@@ -201,30 +194,27 @@ const render = async (root, state) => {
 
 // create content
 const App = (state) => {
-    let { rovers, apod } = state
 
     return `
         <header></header>
         <main id='main'>
-            ${barInfo ? dashboard.innerHTML : `<h1>Loading Bar Section...</h1>` }             
+            ${Dashboard(barInfo)}
         </main>
         <footer></footer>
     `
 }
 
-// listening for load event because page should load before any JS is called
+
 window.addEventListener('load', () => {
     render(root, store)
 })
 
 // ------------------------------------------------------  COMPONENTS
 
-// Pure function that renders conditional information -- THIS IS JUST AN EXAMPLE, you can delete it.
-const Greeting = (name) => {
-    if (name) {
-        return `
-            <h1>Welcome, ${name}!</h1>
-        `
+// Pure function that renders conditional information.
+const Dashboard = (barInfo) => {
+    if (barInfo) {
+        return dashboard.innerHTML
     }
 
     return `
