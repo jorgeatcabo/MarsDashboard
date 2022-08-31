@@ -4,7 +4,6 @@
     "\\src",
     "\\src\\public",
     "\\src\\public\\assets",
-    "\\src\\public\\assets\\stylesheets",
     "\\src\\server"
   ],
   "SelectedNode": "\\src\\server\\index.js",

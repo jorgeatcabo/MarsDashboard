@@ -1,20 +1,27 @@
 /* -------------------  MOBILE  --------------------- */
+body {
+    display: flex;
+    flex-direction: column;
+    font-family: Arial;
+    min-height: 100vh;
+}
 
-/*body {
-  display: flex;
-  flex-direction: column;
-  font-family: Arial;
-  min-height: 100vh;
-}*/
 * {
     box-sizing: border-box
 }
 
-body {
-    font-family: "Lato", sans-serif;
-}
 header {
     /* header styles */
+}
+
+
+main {
+  flex: 1;
+  padding: 20px;
+}
+
+footer {
+  /* footer styles */
 }
 
 /* Style the tab */
@@ -26,19 +33,19 @@ header {
     height: 300px;
 }
 
-/* Style the buttons inside the tab */
+    /* Style the buttons inside the tab */
 .tab button {
-    display: block;
-    background-color: inherit;
-    color: black;
-    padding: 22px 16px;
-    width: 100%;
-    border: none;
-    outline: none;
-    text-align: left;
-    cursor: pointer;
-    transition: 0.3s;
-    font-size: 17px;
+display: block;
+background-color: inherit;
+color: black;
+padding: 11px 8px;
+width: 100%;
+border: none;
+outline: none;
+text-align: center;
+cursor: pointer;
+transition: 0.3s;
+font-size: 9px;
 }
 
 /* Change background color of buttons on hover */
@@ -60,28 +67,66 @@ header {
     border-left: none;
     height: 100%;
 }
-main {
-  flex: 1;
-  padding: 20px;
+
+/* Style the info content */
+div.info p {
+    font-size: 9px;
 }
 
-footer {
-  /* footer styles */
+/* Style the images */
+img {
+    width: 100%;
 }
 
 /* -------------------  TABLET  --------------------- */
 @media (min-width: 768px) {
-  /* use mobile */
+    .tab button {
+        padding: 22px 16px;
+        font-size: 17px;
+    }
+
+    div.info p {
+        font-size: 17px;
+    }
+
+    img {
+        width: 100%;
+    }
 }
+
 
 /* -------------------  DESKTOP  -------------------- */
 
 @media (min-width: 1224px) {
-  /* use mobile */
+    .tab button {
+        padding: 22px 16px;
+        font-size: 17px;
+    }
+
+    div.info p {
+        font-size: 17px;
+    }
+
+    img {
+        width: 100%;
+    }
+
 }
 
 /* -------------------  LARGE SCREENS  -------------- */
 
 @media (min-width: 1824px) {
-  /* use mobile */
+    .tab button {
+        padding: 22px 16px;
+        font-size: 17px;
+    }
+
+    div.info p {
+        font-size: 17px;
+    }
+
+    img {
+        width: 100%;
+    }
+
 }

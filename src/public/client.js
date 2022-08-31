@@ -127,6 +127,7 @@ const render = async (root, state) => {
         let extraInfoTags = store.get('rovers').map((element) => {
             let div = document.createElement('div');
             div.id = element;
+            div.classList.add("info");
 
             return div
 
