@@ -27,7 +27,6 @@ function openTab(evt) {
     }
     document.getElementById(evt.currentTarget.myParam).style.display = "block";
     evt.currentTarget.className += " active";
-    
 }
 
 const updateStore = (state, newState) => {
@@ -77,10 +76,14 @@ const render = async (root, state) => {
 
     })
 
-    //Pure function for creating tabs
-    const createTabsContent = (rovers) =>{
+    var tabsContent = ""
 
-        let tabs = rovers.map((element) => {
+    //Higher-Order Function for creating Tabs' Content and Adding Additional Content Base on callback Function
+    //in This Case Images Elements
+    const createTabsContent = (callback,rovers) => {
+
+        //Adding tabs base on rovers
+        tabsContent = rovers.map((element) => {
             //Creating Room for Content 
             let tabContent = document.createElement('div');
             tabContent.id = element;
@@ -96,19 +99,15 @@ const render = async (root, state) => {
 
         })
 
-        return tabs
+        //Returning modified tabs, in this case with images added 
+        return callback(tabsContent)
     }
-
-    var tabsContent=""
 
     let rovers = store.get('rovers');
 
-    //Higher-Order Function for Adding Images to Tabs' Content
-    const addImages = (createTabsContent,rovers) => {
-
-        tabsContent = createTabsContent(rovers);
-
-        store.get('rovers').map((element,index) => {
+    //Callback Function for Adding image to a HTML Tag in This Case the Tab
+    const addImages = (tag) => {
+        store.get('rovers').map((element, index) => {
 
             //Creating img Element for Content 
             let imgContent = document.createElement('img');
@@ -116,13 +115,15 @@ const render = async (root, state) => {
             imgContent.width = "850";
             imgContent.height = "200";
 
-            tabsContent[index].appendChild(imgContent);
+            //Adding img to tabs content
+            tag[index].appendChild(imgContent);
 
         })
 
     }
 
-    const createExtraInfo = (rovers) => {
+    //Higher-Order Function for Adding Extra Info to Tabs' Content With the callback Function
+    const createExtraInfo = (callback) => {
 
         let extraInfoTags = store.get('rovers').map((element) => {
             let div = document.createElement('div');
@@ -133,16 +134,11 @@ const render = async (root, state) => {
 
         })
 
-        return extraInfoTags
-
+        return callback(extraInfoTags)
     }
 
-    var extraInfoTag = ""
-
-    //Higher-Order Function for Adding Extra Info to Tabs' Content
-    const addExtraInfo = (createExtraInfo, rovers) => {
-
-        extraInfoTag = createExtraInfo(rovers);
+    //Callback Function for Adding Extra Info Each Tab
+    const addExtraInfo = (tag) => {
 
         store.get('rovers').map((element, index) => {
 
@@ -159,24 +155,25 @@ const render = async (root, state) => {
             let pPhotoDate = document.createElement('p');
             pPhotoDate.textContent = `Photo Date: ${store.get('roverData')[index].latest_photos[0].earth_date}`;
 
-            extraInfoTag[index].appendChild(pLaunch_date);
-            extraInfoTag[index].appendChild(pLanding_date);
-            extraInfoTag[index].appendChild(pStatus);
-            extraInfoTag[index].appendChild(pPhotoDate);
+            tag[index].appendChild(pLaunch_date);
+            tag[index].appendChild(pLanding_date);
+            tag[index].appendChild(pStatus);
+            tag[index].appendChild(pPhotoDate);
 
         })
 
         ////Add Extra Info to Tab's Content
-        extraInfoTag.forEach((extraInfo,index) => tabsContent[index].appendChild(extraInfo));
+        tag.forEach((extraInfo,index) => tabsContent[index].appendChild(extraInfo));
 
         //Add Content to Each Bar's Tab
         tabsContent.forEach(tabContent => dashboard.appendChild(tabContent));
     }
 
     //Execute Higher-Order Function for Adding Images to Tabs' Content
-    addImages(createTabsContent, rovers);
+    createTabsContent(addImages, rovers);
 
-    addExtraInfo(createExtraInfo, rovers)
+    //Execute Higher-Order Function for Adding Extra Info to Tabs' Content
+    createExtraInfo(addExtraInfo)
 
     root.innerHTML = App(state)
 
@@ -205,7 +202,6 @@ const App = (state) => {
     `
 }
 
-
 window.addEventListener('load', () => {
     render(root, store)
 })
@@ -222,4 +218,3 @@ const Dashboard = (barInfo) => {
         <h1>Hello!</h1>
     `
 }
-
