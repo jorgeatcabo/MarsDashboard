@@ -179,12 +179,11 @@ const render = async (root, state) => {
 
     var buttons = document.querySelectorAll('.tablinks');
 
-    //Add click event for each tab's button
-    for (var i = 0; i < buttons.length; i++) {
-        let rover = store.get('rovers')[i]
-        buttons[i].addEventListener('click', openTab, false);
-        buttons[i].myParam = rover;
-    }   
+    buttons.forEach((button, index) => {
+        let rover = store.get('rovers')[index]
+        button.addEventListener('click', openTab, false);
+        button.myParam = rover;
+    })
 
     // Get the element with id="defaultOpen" and click on it
     document.getElementById("defaultOpen").click();
