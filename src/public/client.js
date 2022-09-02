@@ -16,15 +16,20 @@ var info = false
 var roverData = []
 
 function openTab(evt) {
-    var i, tabcontent, tablinks;
+    let tabcontent, tablinks;
+
     tabcontent = document.getElementsByClassName("tabcontent");
-    for (i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
-    }
+
+    Array.from(tabcontent).forEach((tab) => {
+        tab.style.display = "none";
+    });
+
     tablinks = document.getElementsByClassName("tablinks");
-    for (i = 0; i < tablinks.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace(" active", "");
-    }
+
+    Array.from(tablinks).forEach((tab) => {
+        tab.className = tab.className.replace(" active", "");
+    });
+
     document.getElementById(evt.currentTarget.myParam).style.display = "block";
     evt.currentTarget.className += " active";
 }
@@ -40,25 +45,30 @@ const render = async (root, state) => {
 // ------------------------------------------------------  API CALLS
     const fetchingData = async () => {
 
-        await store.get('rovers').reduce(async (previousPromise, url) => {
-            await previousPromise
-            const response = await fetch(`http://localhost:3000/${url}`)
-            const data = await response.json();
-            roverData.push(data)
+        try {
+            await store.get('rovers').reduce(async (previousPromise, url) => {
+                await previousPromise
+                const response = await fetch(`http://localhost:3000/${url}`)
+                const data = await response.json();
+                roverData.push(data)
 
-            updateStore(store, { roverData })
-            
-            //Make Bar Info Visible
-            barInfo = true
+                updateStore(store, { roverData })
 
-            return Promise.resolve()
-        }, Promise.resolve())
+                //Make Bar Info Visible
+                barInfo = true
+
+                return Promise.resolve()
+            }, Promise.resolve())
+        } catch (err) {
+            console.log('error:', err);
+        }
+        
     }
 
     await fetchingData()
 
     //Creating Tab
-    var tab = document.createElement('div');
+    let tab = document.createElement('div');
     tab.classList.add("tab");
     tab.id = "parent"
 
@@ -177,7 +187,7 @@ const render = async (root, state) => {
 
     root.innerHTML = App(state)
 
-    var buttons = document.querySelectorAll('.tablinks');
+    let buttons = document.querySelectorAll('.tablinks');
 
     buttons.forEach((button, index) => {
         let rover = store.get('rovers')[index]
